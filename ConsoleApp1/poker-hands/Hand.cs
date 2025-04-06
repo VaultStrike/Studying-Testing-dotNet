@@ -13,12 +13,45 @@ namespace StudyingTesting.poker_hands
         //Hand h = new Hand("8C TS KC 9H 4S"); 
         public Hand(String handString)
         {
+            string[] cardStrings = handString.Split(' ');
 
-            for(int i = 0;i < cards.Length; i++)
+            for (int i = 0; i < 5; i++)
             {
-                cards[i] = new Card(1, Suit.CLUBS);
+                string cardString = cardStrings[i];
+
+                
+                char valueChar = cardString[0];
+                int value;
+
+                
+                if (valueChar == 'T')
+                    value = 10;
+                else if (valueChar == 'J')
+                    value = 11;
+                else if (valueChar == 'Q')
+                    value = 12;
+                else if (valueChar == 'K')
+                    value = 13;
+                else if (valueChar == 'A')
+                    value = 14;
+                else
+                    value = int.Parse(valueChar.ToString());
+
+                // Second character is the suit
+                char suitChar = cardString[1];
+                Suit suit;
+
+                if (suitChar == 'C')
+                    suit = Suit.CLUBS;
+                else if (suitChar == 'D')
+                    suit = Suit.DIAMONDS;
+                else if (suitChar == 'H')
+                    suit = Suit.HEARTS;
+                else // 'S'
+                    suit = Suit.SPADES;
+
+                cards[i] = new Card(value, suit);
             }
-            //...TODO
         }
 
         public Hand()

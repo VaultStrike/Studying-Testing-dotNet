@@ -1,5 +1,9 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using StudyingTesting.poker_hands;
+using StudyingTesting.users;
+using System;
+using System.Collections.Generic;
 
 namespace TestMyProject
 {
@@ -9,33 +13,21 @@ namespace TestMyProject
         [TestMethod]
         public void TestMethod1()
         {
-
             int Expected = 7;
             Card c = new Card(Expected, Suit.SPADES);
-
             Assert.AreEqual(Expected, c.Number);
         }
-
 
         [TestMethod]
         public void TestHandSorting()
         {
-
             Card card = new Card(5, Suit.DIAMONDS);
-
             Console.WriteLine("card=" + card);
-
             Card card2 = new Card(7, Suit.HEARTS);
-
             Card card3 = new Card(2, Suit.HEARTS);
-
-
             Card card4 = new Card(14, Suit.HEARTS);
-
             Card card5 = new Card(10, Suit.SPADES);
-
             Card[] cards = { card, card2, card3, card4, card5 };
-
             Hand hand = new Hand();
             hand.Cards = cards;
             hand.Sort();
@@ -43,10 +35,8 @@ namespace TestMyProject
             for (int i = 0; i < cards.Length; i++)
             {
                 Assert.IsTrue(num <= cards[i].Number, $"Expected {cards[i].Number} to be greater than {num}, but it was not. lingar");
-
                 num = cards[i].Number;
             }
-
         }
 
         [TestMethod]
@@ -59,21 +49,61 @@ namespace TestMyProject
             cards[2] = new Card(13, Suit.CLUBS);
             cards[3] = new Card(9, Suit.HEARTS);
             cards[4] = new Card(4, Suit.SPADES);
-
-
             //...
             Hand h = new Hand("8C TS KC 9H 4S");
-
             for (int i = 0; i < cards.Length; i++)
             {
                 Assert.AreEqual(cards[i].Number, h.Cards[i].Number);
-
                 Assert.AreEqual(cards[i].Suit, h.Cards[i].Suit);
-
             }
+        }
 
+        [TestMethod]
+        public void AdminUserCanAddTable()
+        {
+            // Arrange
+            User user = new User();
+            user.Username = "AdminUser";
+            user.Roles = new List<User_Role> { User_Role.ADMIN };
+            int initialTableCount = user.Tables.Count;
 
+            // Act
+            user.AddTable();
+
+            // Assert
+            Assert.AreEqual(initialTableCount + 1, user.Tables.Count, "Admin should be able to add a table");
+        }
+
+        [TestMethod]
+        public void ManagerUserCanAddTable()
+        {
+            // Arrange
+            User user = new User();
+            user.Username = "ManagerUser";
+            user.Roles = new List<User_Role> { User_Role.MANAGER };
+            int initialTableCount = user.Tables.Count;
+
+            // Act
+            user.AddTable();
+
+            // Assert
+            Assert.AreEqual(initialTableCount + 1, user.Tables.Count, "Manager should be able to add a table");
+        }
+
+        [TestMethod]
+        public void PlayerUserCannotAddTable()
+        {
+            // Arrange
+            User user = new User();
+            user.Username = "PlayerUser";
+            user.Roles = new List<User_Role> { User_Role.PLAYER };
+            int initialTableCount = user.Tables.Count;
+
+            // Act
+            user.AddTable();
+
+            // Assert
+            Assert.AreEqual(initialTableCount, user.Tables.Count, "Player should not be able to add a table");
         }
     }
-
 }
